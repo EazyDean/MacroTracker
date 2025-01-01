@@ -47,10 +47,19 @@ struct MacroView: View {
                 .frame(maxWidth: .infinity, alignment: .topLeading)
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+            
+            
+        }
+        .task {
+            do {
+                try await OpenAIService.shared.sendPromptToChatGPT(message: "Slice of cheese pizza")
+            } catch {
+                print(error.localizedDescription)
+                }
+            }
         }
     }
         
-}
 
 #Preview {
     MacroView()
