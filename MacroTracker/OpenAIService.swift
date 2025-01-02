@@ -60,34 +60,10 @@ class OpenAIService {
         
         let (data, _) = try await URLSession.shared.data(for: urlRequest)
         
-        print(String(data: data, encoding: .utf8)!)
+        let result = try JSONDecoder().decode(GPTResponse.self, from: data)
+        let args = result.choices[0].message.functionCall.arguments
+        let argData = Data(args.utf8)  // Convert the string to Data
+        let macro = try JSONDecoder().decode(MacroResponse.self, from: argData)
+        print(macro)
     }
-}
-
-struct GPTChatPayLoad : Encodable {
-    let model : String
-    let messages : [GPTMessage]
-    let functions : [GPTFunction]
-}
-
-struct GPTMessage : Encodable {
-    let role : String
-    let content : String
-}
-
-struct GPTFunction : Encodable {
-    let name : String
-    let description : String
-    let parameters : GPTFunctionParameters
-}
-
-struct GPTFunctionParameters : Encodable {
-    let type : String
-    let properties : [String:GPTFunctionProperty]?
-    let required : [String]?
-}
-
-struct GPTFunctionProperty : Encodable {
-    let type: String
-    let description : String
 }
